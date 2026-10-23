@@ -1,0 +1,4 @@
+Why does making only increment() synchronized but not get() still leave a bug?
+This causes a Memory Visibility bug. In Java, threads often cache variables in their local CPU registers to improve performance. The synchronized keyword does two things: it prevents concurrent execution (mutual exclusion), and it forces the thread to flush its cached variables to main memory.
+
+If you synchronize increment() but do not synchronize get(), multiple threads will update the count safely, but the thread calling get() has no "happens-before" guarantee. It might read a stale, out-of-date value of count that was left over in its local CPU cache, rather than fetching the newly updated value from the main memory. Synchronizing get() ensures the reading thread is forced to look at the most up-to-date memory.
